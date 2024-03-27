@@ -17,41 +17,59 @@
 package dagger.internal.codegen.binding;
 
 import static dagger.internal.codegen.binding.SourceFiles.generatedMonitoringModuleName;
+import static dagger.internal.codegen.extension.DaggerStreams.toImmutableSet;
 
 import androidx.room.compiler.processing.XProcessingEnv;
+import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimaps;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.WildcardTypeName;
 import dagger.internal.codegen.base.DaggerSuperficialValidation;
+import dagger.internal.codegen.base.MapType;
+import dagger.internal.codegen.base.SetType;
 import dagger.internal.codegen.javapoet.TypeNames;
+import dagger.internal.codegen.model.DaggerAnnotation;
 import dagger.internal.codegen.model.Key;
+import dagger.internal.codegen.model.Key.MultibindingContributionIdentifier;
+import dagger.internal.codegen.xprocessing.XTypes;
 import java.util.Optional;
 import javax.inject.Inject;
 
 /** Stores the bindings and declarations of a component by key. */
 final class ComponentDeclarations {
+  private static ImmutableSet<TypeName> FRAMEWORK_TYPENAMES =
+      ImmutableSet.of(TypeNames.PROVIDER, TypeNames.PRODUCER, TypeNames.PRODUCED);
+
+  private final KeyFactory keyFactory;
   private final ImmutableSetMultimap<Key, ContributionBinding> bindings;
   private final ImmutableSetMultimap<Key, DelegateDeclaration> delegates;
-  private final ImmutableSetMultimap<Key, MultibindingDeclaration> multibindings;
   private final ImmutableSetMultimap<Key, OptionalBindingDeclaration> optionalBindings;
   private final ImmutableSetMultimap<Key, SubcomponentDeclaration> subcomponents;
-  private final ImmutableSetMultimap<Key, ContributionBinding> multibindingContributions;
-  private final ImmutableSetMultimap<Key, DelegateDeclaration> delegateMultibindingContributions;
+  private final ImmutableSetMultimap<TypeNameKey, MultibindingDeclaration> multibindings;
+  private final ImmutableSetMultimap<TypeNameKey, ContributionBinding> multibindingContributions;
+  private final ImmutableSetMultimap<TypeNameKey, DelegateDeclaration>
+      delegateMultibindingContributions;
 
   private ComponentDeclarations(
+      KeyFactory keyFactory,
       ImmutableSetMultimap<Key, ContributionBinding> bindings,
       ImmutableSetMultimap<Key, DelegateDeclaration> delegates,
-      ImmutableSetMultimap<Key, MultibindingDeclaration> multibindings,
       ImmutableSetMultimap<Key, OptionalBindingDeclaration> optionalBindings,
-      ImmutableSetMultimap<Key, SubcomponentDeclaration> subcomponents) {
+      ImmutableSetMultimap<Key, SubcomponentDeclaration> subcomponents,
+      ImmutableSetMultimap<TypeNameKey, MultibindingDeclaration> multibindings,
+      ImmutableSetMultimap<TypeNameKey, ContributionBinding> multibindingContributions,
+      ImmutableSetMultimap<TypeNameKey, DelegateDeclaration> delegateMultibindingContributions) {
+    this.keyFactory = keyFactory;
     this.bindings = bindings;
     this.delegates = delegates;
-    this.multibindings = multibindings;
     this.optionalBindings = optionalBindings;
     this.subcomponents = subcomponents;
-    this.multibindingContributions = multibindingContributionsByMultibindingKey(bindings.values());
-    this.delegateMultibindingContributions =
-        multibindingContributionsByMultibindingKey(delegates.values());
+    this.multibindings = multibindings;
+    this.multibindingContributions = multibindingContributions;
+    this.delegateMultibindingContributions = delegateMultibindingContributions;
   }
 
   ImmutableSet<ContributionBinding> bindings(Key key) {
@@ -62,16 +80,68 @@ final class ComponentDeclarations {
     return delegates.get(key);
   }
 
-  ImmutableSet<DelegateDeclaration> delegateMultibindingContributions(Key key) {
-    return delegateMultibindingContributions.get(key);
+  /**
+   * Returns the delegate multibinding contributions (e.g. {@code @Binds @IntoMap}) for the given
+   * {@code multibindingKey}, or an empty set if it's not a valid multibinding key.
+   *
+   * <p>A valid {@code multibindingKey} has one of the following types:
+   * <ul>
+   *   <li> {@code Map<K, V>}
+   *   <li> {@code Map<K, Provider<V>>}
+   *   <li> {@code Map<K, Producer<V>>}
+   *   <li> {@code Map<K, Produced<V>>}
+   *   <li> {@code Set<V>}
+   *   <li> {@code Set<Produced<V>>}
+   * </ul>
+   *
+   * <p>Note that {@code Map<K, V>} and {@code Map<K, Provider<V>>}, e.g., represent the same
+   * underlying multibinding and will return the same contributions.
+   */
+  ImmutableSet<DelegateDeclaration> delegateMultibindingContributions(Key multibindingKey) {
+    return delegateMultibindingContributions.get(
+        unwrapMultibindingKey(multibindingKey, keyFactory));
   }
 
-  ImmutableSet<MultibindingDeclaration> multibindings(Key key) {
-    return multibindings.get(key);
+  /**
+   * Returns the multibinding declarations (i.e. {@code @Multibinds}) for the given
+   * {@code multibindingKey}, or an empty set if it's not a valid multibinding key.
+   *
+   * <p>A valid {@code multibindingKey} has one of the following types:
+   * <ul>
+   *   <li> {@code Map<K, V>}
+   *   <li> {@code Map<K, Provider<V>>}
+   *   <li> {@code Map<K, Producer<V>>}
+   *   <li> {@code Map<K, Produced<V>>}
+   *   <li> {@code Set<V>}
+   *   <li> {@code Set<Produced<V>>}
+   * </ul>
+   *
+   * <p>Note that {@code Map<K, V>} and {@code Map<K, Provider<V>>}, e.g., represent the same
+   * underlying multibinding and will return the same declarations.
+   */
+  ImmutableSet<MultibindingDeclaration> multibindings(Key multibindingKey) {
+    return multibindings.get(unwrapMultibindingKey(multibindingKey, keyFactory));
   }
 
-  ImmutableSet<ContributionBinding> multibindingContributions(Key key) {
-    return multibindingContributions.get(key);
+  /**
+   * Returns the multibinding contributions (e.g. {@code @Provides @IntoMap}) for the given
+   * {@code multibindingKey}, or an empty set if it's not a valid multibinding key.
+   *
+   * <p>A valid {@code multibindingKey} has one of the following types:
+   * <ul>
+   *   <li> {@code Map<K, V>}
+   *   <li> {@code Map<K, Provider<V>>}
+   *   <li> {@code Map<K, Producer<V>>}
+   *   <li> {@code Map<K, Produced<V>>}
+   *   <li> {@code Set<V>}
+   *   <li> {@code Set<Produced<V>>}
+   * </ul>
+   *
+   * <p>Note that {@code Map<K, V>} and {@code Map<K, Provider<V>>}, e.g., represent the same
+   * underlying multibinding and will return the same contributions.
+   */
+  ImmutableSet<ContributionBinding> multibindingContributions(Key multibindingKey) {
+    return multibindingContributions.get(unwrapMultibindingKey(multibindingKey, keyFactory));
   }
 
   ImmutableSet<OptionalBindingDeclaration> optionalBindings(Key key) {
@@ -92,31 +162,18 @@ final class ComponentDeclarations {
         .build();
   }
 
-  /**
-   * A multimap of those {@code declarations} that are multibinding contribution declarations,
-   * indexed by the key of the set or map to which they contribute.
-   */
-  private static <T extends BindingDeclaration>
-      ImmutableSetMultimap<Key, T> multibindingContributionsByMultibindingKey(
-          Iterable<T> declarations) {
-    ImmutableSetMultimap.Builder<Key, T> builder = ImmutableSetMultimap.builder();
-    for (T declaration : declarations) {
-      if (declaration.key().multibindingContributionIdentifier().isPresent()) {
-        builder.put(declaration.key().withoutMultibindingContributionIdentifier(), declaration);
-      }
-    }
-    return builder.build();
-  }
-
   static final class Factory {
     private final XProcessingEnv processingEnv;
+    private final KeyFactory keyFactory;
     private final ModuleDescriptor.Factory moduleDescriptorFactory;
 
     @Inject
     Factory(
         XProcessingEnv processingEnv,
+        KeyFactory keyFactory,
         ModuleDescriptor.Factory moduleDescriptorFactory) {
       this.processingEnv = processingEnv;
+      this.keyFactory = keyFactory;
       this.moduleDescriptorFactory = moduleDescriptorFactory;
     }
 
@@ -145,11 +202,18 @@ final class ComponentDeclarations {
       }
 
       return new ComponentDeclarations(
+          keyFactory,
           indexDeclarationsByKey(bindings.build()),
           indexDeclarationsByKey(delegates.build()),
-          indexDeclarationsByKey(multibindings.build()),
           indexDeclarationsByKey(optionalBindings.build()),
-          indexDeclarationsByKey(subcomponents.build()));
+          indexDeclarationsByKey(subcomponents.build()),
+          // The @Multibinds declarations and @IntoSet/@IntoMap multibinding contributions are all
+          // indexed by their "unwrapped" multibinding key (i.e. Map<K, V> or Set<V>) so that we
+          // don't have to check multiple different keys to gather all of the contributions.
+          indexDeclarationsByUnwrappedMultibindingKey(multibindings.build()),
+          indexDeclarationsByUnwrappedMultibindingKey(multibindingContributions(bindings.build())),
+          indexDeclarationsByUnwrappedMultibindingKey(
+              multibindingContributions(delegates.build())));
     }
 
     /**
@@ -182,5 +246,117 @@ final class ComponentDeclarations {
         ImmutableSetMultimap<Key, T> indexDeclarationsByKey(Iterable<T> declarations) {
       return ImmutableSetMultimap.copyOf(Multimaps.index(declarations, BindingDeclaration::key));
     }
+
+    /** Indexes {@code bindingDeclarations} by the unwrapped multibinding key. */
+    private <T extends BindingDeclaration> ImmutableSetMultimap<TypeNameKey, T>
+        indexDeclarationsByUnwrappedMultibindingKey(Iterable<T> declarations) {
+      return ImmutableSetMultimap.copyOf(
+          Multimaps.index(
+              declarations,
+              declaration ->
+                  unwrapMultibindingKey(
+                      declaration.key().withoutMultibindingContributionIdentifier(), keyFactory)));
+    }
+
+    private static <T extends BindingDeclaration> ImmutableSet<T> multibindingContributions(
+        ImmutableSet<T> declarations) {
+      return declarations.stream()
+          .filter(declaration -> declaration.key().multibindingContributionIdentifier().isPresent())
+          .collect(toImmutableSet());
+    }
+  }
+
+  private static TypeNameKey unwrapMultibindingKey(Key key, KeyFactory keyFactory) {
+    if (MapType.isMap(key)) {
+      return TypeNameKey.from(
+          key.multibindingContributionIdentifier(),
+          key.qualifier(),
+          keyFactory.unwrapMapValueType(key).type().xprocessing().getTypeName());
+    }
+    if (SetType.isSet(key)) {
+      return TypeNameKey.from(
+          key.multibindingContributionIdentifier(),
+          key.qualifier(),
+          keyFactory.unwrapSetKey(key, TypeNames.PRODUCED).type().xprocessing().getTypeName());
+    }
+    return TypeNameKey.from(
+          key.multibindingContributionIdentifier(),
+          key.qualifier(),
+          key.type().xprocessing().getTypeName());
+  }
+
+  private static TypeName unwrapMultibindingMapValue(ParameterizedTypeName mapTypeName) {
+    if (mapTypeName.typeArguments.get(1) instanceof ParameterizedTypeName) {
+      TypeName keyTypeName = mapTypeName.typeArguments.get(0);
+      ParameterizedTypeName valueTypeName =
+          (ParameterizedTypeName) mapTypeName.typeArguments.get(1);
+      if (FRAMEWORK_TYPENAMES.contains(valueTypeName.rawType)) {
+        return ParameterizedTypeName.get(
+            TypeNames.MAP, keyTypeName, valueTypeName.typeArguments.get(0));
+      }
+    }
+    return mapTypeName;
+  }
+
+  private static TypeName unwrapMultibindingSetValue(ParameterizedTypeName setTypeName) {
+    if (setTypeName.typeArguments.get(0) instanceof ParameterizedTypeName) {
+      ParameterizedTypeName valueTypeName =
+          (ParameterizedTypeName) setTypeName.typeArguments.get(0);
+      if (valueTypeName.rawType.equals(TypeNames.PRODUCED)) {
+        return ParameterizedTypeName.get(TypeNames.SET, valueTypeName.typeArguments.get(0));
+      }
+    }
+    return setTypeName;
+  }
+
+  /**
+   * Returns {@code true} if the given {@code key}'s type has a valid multibinding type.
+   *
+   * <p>Note that this doesn't mean that the key matches a multibinding in the BindingGraph, just
+   * that its type could match a multibinding. In particular, we check that the Set/Map is not a
+   * raw type, and that its type arguments are not wildcards (all synthetic multibinding key types
+   * have invariant type arguments).
+   */
+  private static boolean isValidMultibindingKey(Key key) {
+    if (XTypes.isRawParameterizedType(key.type().xprocessing())) {
+      return false;
+    }
+    // Note: By starting with the TypeName of the entire Map/Set, we ensure that any variance in
+    // the original TypeName is consistent as we traverse through the type arguments. If we
+    // traverse through the type arguments directly using XType and then get the TypeName, we
+    // can get the wrong type variance (see b/352142595).
+    if (MapType.isMap(key)) {
+      ParameterizedTypeName mapTypeName =
+          (ParameterizedTypeName) key.type().xprocessing().getTypeName();
+      return !(mapTypeName.typeArguments.get(0) instanceof WildcardTypeName)
+          && !(mapTypeName.typeArguments.get(1) instanceof WildcardTypeName);
+    } else if (SetType.isSet(key)) {
+      ParameterizedTypeName setTypeName =
+          (ParameterizedTypeName) key.type().xprocessing().getTypeName();
+      return !(setTypeName.typeArguments.get(0) instanceof WildcardTypeName);
+    } else {
+      return false;
+    }
+  }
+
+  /** Similar to {@link Key} but uses a {@link TypeName} rather than an {@code XType}. */
+  // Note: We use TypeNameKey for multibindings because multibindings are grouped by a derived type
+  // that may be different than the exact XType provided by the user. Due to b/352142595, we lose
+  // variance information when creating derived XTypes so we deal with TypeName to avoid that issue.
+  @AutoValue
+  abstract static class TypeNameKey {
+    static TypeNameKey from(
+        Optional<MultibindingContributionIdentifier> multibindingContributionIdentifier,
+        Optional<DaggerAnnotation> qualifier,
+        TypeName typeName) {
+      return new AutoValue_ComponentDeclarations_TypeNameKey(
+          multibindingContributionIdentifier, qualifier, typeName);
+    }
+
+    abstract Optional<MultibindingContributionIdentifier> multibindingContributionIdentifier();
+
+    abstract Optional<DaggerAnnotation> qualifier();
+
+    abstract TypeName type();
   }
 }
