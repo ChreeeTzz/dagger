@@ -15,9 +15,12 @@
 # Description:
 #   Internal Hilt libraries for legacy code.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
     name = "aggregated_element_proxy",
     srcs = ["AggregatedElementProxy.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )

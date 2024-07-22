@@ -18,8 +18,12 @@ DOCLINT_HTML_AND_SYNTAX = ["-Xdoclint:html,syntax"]
 
 DOCLINT_REFERENCES = ["-Xdoclint:reference"]
 
-JAVA_RELEASE_MIN = [
+DAGGER_RUNTIME_JVM_TARGET = [
     "-source 7 -target 7",
+]
+
+HILT_RUNTIME_JVM_TARGET = [
+    "-source 8 -target 8",
 ]
 
 POM_VERSION = "${project.version}"

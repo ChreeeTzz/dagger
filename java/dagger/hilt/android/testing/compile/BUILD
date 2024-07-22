@@ -14,6 +14,8 @@
 # Description:
 #   Tests for internal code for implementing Hilt processors.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
@@ -23,6 +25,7 @@ java_library(
         "HiltCompilerProcessors.java",
         "HiltCompilerTests.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//java/dagger/hilt/android/processor/internal/androidentrypoint:processor_lib",
         "//java/dagger/hilt/android/processor/internal/customtestapplication:processor_lib",

@@ -15,11 +15,14 @@
 # Description:
 #   Testing libraries for Hilt.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//third_party/java/jsr305_annotations",
     ],
@@ -32,6 +35,7 @@ java_library(
     exported_plugins = [
         "//java/dagger/hilt/processor/internal/aggregateddeps:plugin",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt/processor/internal/aggregateddeps:annotation",
     ],

@@ -15,6 +15,8 @@
 # Description:
 #   Hilt Android components
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 android_library(
@@ -28,6 +30,7 @@ android_library(
         "ViewModelComponent.java",
         "ViewWithFragmentComponent.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt/components",
     ],
@@ -42,6 +45,7 @@ android_library(
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 filegroup(

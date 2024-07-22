@@ -15,11 +15,14 @@
 # Description:
 #   Hilt lifecycle ViewModel hooks.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 android_library(
     name = "lifecycle",
     srcs = glob(["*.java"]),
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//:dagger_with_compiler",
         "//java/dagger/hilt:entry_point",

@@ -15,9 +15,12 @@
 # Description:
 #   A processor that aggregates metadata about Hilt @EarlyEntryPoint annotations
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
     name = "earlyentrypoint",
     srcs = ["AggregatedEarlyEntryPoint.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )

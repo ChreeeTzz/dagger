@@ -15,6 +15,8 @@
 # Description:
 #   This package contains sources used within code generated sources.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
@@ -23,6 +25,7 @@ java_library(
     exported_plugins = [
         "//java/dagger/hilt/processor/internal/originatingelement:processor",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":package_info",
     ],
@@ -31,6 +34,7 @@ java_library(
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 filegroup(

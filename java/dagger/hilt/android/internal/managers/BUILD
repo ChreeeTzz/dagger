@@ -15,11 +15,14 @@
 # Description:
 #   Internal Hilt Android managers
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 android_library(
     name = "component_supplier",
     srcs = ["ComponentSupplier.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 android_library(
@@ -34,6 +37,7 @@ android_library(
         "ServiceComponentManager.java",
         "ViewComponentManager.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [":saved_state_handle_holder"],
     deps = [
         ":component_supplier",
@@ -65,6 +69,7 @@ android_library(
 android_library(
     name = "saved_state_handle_holder",
     srcs = ["SavedStateHandleHolder.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//java/dagger/hilt/android/internal",
         "//java/dagger/hilt/internal:preconditions",

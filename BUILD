@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load(
+    "@io_bazel_rules_kotlin//kotlin:core.bzl",
+    "kt_kotlinc_options",
+)
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "define_kt_toolchain")
 load("@rules_java//java:defs.bzl", "java_library")
 load("//tools/jarjar:jarjar.bzl", "jarjar_library")
@@ -19,16 +23,21 @@ load("//tools/javadoc:javadoc.bzl", "javadoc_library")
 
 package(default_visibility = ["//visibility:public"])
 
-define_kt_toolchain(
-    name = "kotlin_toolchain",
-    api_version = "1.4",
-    jvm_target = "1.8",
-    language_version = "1.4",
-)
-
 package_group(
     name = "src",
     packages = ["//..."],
+)
+
+define_kt_toolchain(
+    name = "kotlin_toolchain",
+    api_version = "1.9",
+    jvm_target = "18",
+    language_version = "1.9",
+)
+
+kt_kotlinc_options(
+    name = "hilt_runtime_kotlincopts",
+    jvm_target = "1.8",
 )
 
 java_library(

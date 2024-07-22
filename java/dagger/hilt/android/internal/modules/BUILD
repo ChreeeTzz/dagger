@@ -15,11 +15,14 @@
 # Description:
 #   Hilt android modules for standard components.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 android_library(
     name = "modules",
     srcs = glob(["*.java"]),
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//:dagger_with_compiler",
         "//java/dagger/hilt:install_in",

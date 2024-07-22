@@ -46,6 +46,7 @@ def bazel_kt_android_library(name, kwargs):
     # the jars exist at the expected targets.
     kt_android_library(
         name = "{}_internal".format(name),
+        kotlinc_opts = "//:hilt_runtime_kotlincopts",
         **kwargs
     )
 

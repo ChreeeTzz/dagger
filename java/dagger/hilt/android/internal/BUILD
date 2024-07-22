@@ -15,6 +15,8 @@
 # Description:
 #   Internal Hilt Android utitlies
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 android_library(
@@ -24,6 +26,7 @@ android_library(
         "OnReceiveBytecodeInjectionMarker.java",
         "ThreadUtil.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 filegroup(

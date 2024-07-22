@@ -15,7 +15,6 @@
 """This file defines constants useful across the Dagger tests."""
 
 load("@rules_java//java:defs.bzl", "java_library", "java_test")
-load("//:build_defs.bzl", "JAVA_RELEASE_MIN")
 load(
     "@io_bazel_rules_kotlin//kotlin:kotlin.bzl",
     "kt_jvm_library",
@@ -268,12 +267,8 @@ def _GenLibraryWithVariant(
         functional,
         require_jdk7_syntax):
     if functional and require_jdk7_syntax:
-        # TODO(b/261894425): Decide if we still want to apply JAVA_RELEASE_MIN by default.
-        # Note: Technically, we should also apply JAVA_RELEASE_MIN to tests too, since we have
-        # Dagger code in there as well, but we keep it only on libraries for legacy reasons, and
-        # fixing tests to be jdk7 compatible would require a bit of work. We should decide on
-        # b/261894425 before committing to that work.
-        library_javacopts_kwargs = {"javacopts": javacopts + JAVA_RELEASE_MIN}
+        # TODO(b/261894425): consider applying this explictly at the test rule site.
+        library_javacopts_kwargs = {"javacopts": javacopts + ["-source 7 -target 7"]}
     else:
         library_javacopts_kwargs = {"javacopts": javacopts}
 

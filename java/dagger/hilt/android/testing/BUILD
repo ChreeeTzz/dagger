@@ -14,7 +14,7 @@
 # Description:
 #   Testing libraries for Hilt Android.
 
-load("//:build_defs.bzl", "POM_VERSION")
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET", "POM_VERSION")
 load("//tools/maven:maven.bzl", "gen_maven_artifact")
 
 package(default_visibility = ["//:src"])
@@ -26,6 +26,7 @@ android_library(
     exported_plugins = [
         "//java/dagger/hilt/android/processor/internal/customtestapplication:processor",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt/android/internal/testing:test_application_component_manager",
         "//java/dagger/hilt/android/internal/testing:test_application_component_manager_holder",
@@ -47,6 +48,7 @@ android_library(
         "//java/dagger/hilt/android/processor/internal/androidentrypoint:plugin",
         "//java/dagger/hilt/android/processor/internal/viewmodel:validation_plugin",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         ":hilt_android_rule",
         ":hilt_test_application",
@@ -90,6 +92,7 @@ android_library(
     name = "hilt_android_rule",
     testonly = 1,
     srcs = ["HiltAndroidRule.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":package_info",
         "//java/dagger/hilt/android/internal/testing:mark_that_rules_ran_rule",
@@ -104,6 +107,7 @@ android_library(
     srcs = [
         "HiltTestApplication.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":on_component_ready_runner",
         ":package_info",
@@ -118,6 +122,7 @@ android_library(
     name = "on_component_ready_runner",
     testonly = 1,
     srcs = ["OnComponentReadyRunner.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":package_info",
         "//:dagger_with_compiler",
@@ -137,6 +142,7 @@ android_library(
     exported_plugins = [
         "//java/dagger/hilt/processor/internal/uninstallmodules:processor",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt/android/internal/uninstallmodules",
     ],
@@ -158,6 +164,7 @@ android_library(
     exported_plugins = [
         "//java/dagger/hilt/android/processor/internal/bindvalue:bind_value_processor",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt:install_in",
         "//java/dagger/hilt/android/qualifiers",
@@ -172,6 +179,7 @@ android_library(
     name = "skip_test_injection",
     testonly = 1,
     srcs = ["SkipTestInjection.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":package_info",
     ],
@@ -180,6 +188,7 @@ android_library(
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//third_party/java/jsr305_annotations",
     ],

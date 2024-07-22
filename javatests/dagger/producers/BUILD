@@ -17,9 +17,9 @@
 
 load(
     "//:build_defs.bzl",
+    "DAGGER_RUNTIME_JVM_TARGET",
     "DOCLINT_HTML_AND_SYNTAX",
     "DOCLINT_REFERENCES",
-    "JAVA_RELEASE_MIN",
 )
 load("//:test_defs.bzl", "GenJavaTests")
 
@@ -29,7 +29,7 @@ GenJavaTests(
     name = "producers_tests",
     srcs = glob(["**/*.java"]),
     functional = 0,
-    javacopts = JAVA_RELEASE_MIN + DOCLINT_REFERENCES + DOCLINT_HTML_AND_SYNTAX,
+    javacopts = DAGGER_RUNTIME_JVM_TARGET + DOCLINT_REFERENCES + DOCLINT_HTML_AND_SYNTAX,
     deps = [
         "//java/dagger:core",
         "//java/dagger/producers",

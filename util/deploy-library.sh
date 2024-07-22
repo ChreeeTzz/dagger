@@ -18,9 +18,10 @@ deploy_library() {
   local srcjar=$4
   local javadoc=$5
   local module_name=$6
-  local mvn_goal=$7
-  local version_name=$8
-  shift 8
+  local java_language_level=$7
+  local mvn_goal=$8
+  local version_name=$9
+  shift 9
   local extra_maven_args=("$@")
 
   bazel build --define=pom_version="$version_name" $library $pomfile
@@ -34,7 +35,7 @@ deploy_library() {
   fi
 
   # Validate that the classes in the library jar begin with expected prefixes.
-  validate_jar $(bazel_output_file $library)
+  validate_jar $(bazel_output_file $library) $java_language_level
 
   # TODO(bcorso): Consider moving this into the "gen_maven_artifact" macro, this
   # requires having the version checked-in for the build system.
@@ -103,6 +104,13 @@ add_tracking_version() {
 
 validate_jar() {
   local library=$1
+  local java_language_level=$2
+
+  # Validate the java language level of the classes in the jar.
+  python $(dirname $0)/validate-jar-language-level.py \
+      $library $java_language_level
+
+  # Validate the package prefixes of the files in the jar.
   if [[ $library == */gwt/libgwt.jar ]]; then
      python $(dirname $0)/validate-jar-entry-prefixes.py \
         $library "dagger/,META-INF/,javax/inject/"

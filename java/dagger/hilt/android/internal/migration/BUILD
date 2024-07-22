@@ -15,16 +15,20 @@
 # Description:
 #   Internal classes for migration
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 android_library(
     name = "has_custom_inject",
     srcs = ["HasCustomInject.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 android_library(
     name = "injected_by_hilt",
     srcs = ["InjectedByHilt.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 filegroup(

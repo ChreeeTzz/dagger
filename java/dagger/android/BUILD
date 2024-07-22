@@ -17,6 +17,8 @@
 
 load(
     "//:build_defs.bzl",
+    "DAGGER_RUNTIME_JVM_TARGET",
+    "DOCLINT_HTML_AND_SYNTAX",
     "POM_VERSION",
 )
 load("//tools:dejetify.bzl", "dejetified_library")
@@ -43,6 +45,7 @@ filegroup(
 android_library(
     name = "android",
     srcs = SRCS,
+    javacopts = DAGGER_RUNTIME_JVM_TARGET + DOCLINT_HTML_AND_SYNTAX,
     plugins = [
         "//java/dagger/android/internal/proguard:plugin",
     ],

@@ -14,7 +14,11 @@
 
 # Description:
 #   A library based on Hilt that provides standard components and automated injection for Android.
-load("//:build_defs.bzl", "POM_VERSION")
+load(
+    "//:build_defs.bzl",
+    "HILT_RUNTIME_JVM_TARGET",
+    "POM_VERSION",
+)
 load("//tools:bazel_compat.bzl", "compat_kt_android_library")
 load("//tools/maven:maven.bzl", "gen_maven_artifact")
 
@@ -29,6 +33,7 @@ android_library(
     exported_plugins = [
         "//java/dagger/hilt/android/processor/internal/androidentrypoint:plugin",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt:install_in",
         "//java/dagger/hilt/android/components",
@@ -67,6 +72,7 @@ android_library(
         "//java/dagger/hilt/processor/internal/root:component_tree_deps_plugin",
         "//java/dagger/hilt/processor/internal/root:root_plugin",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         ":activity_retained_lifecycle",
         "//:dagger_with_compiler",
@@ -104,6 +110,7 @@ android_library(
     srcs = [
         "ActivityRetainedLifecycle.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":package_info",
         "//java/dagger/hilt/android/lifecycle:retained_lifecycle",
@@ -115,6 +122,7 @@ android_library(
     srcs = [
         "ViewModelLifecycle.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":package_info",
         "//java/dagger/hilt/android/lifecycle:retained_lifecycle",
@@ -131,6 +139,7 @@ android_library(
         "//java/dagger/hilt/processor/internal/aggregateddeps:plugin",
         "//java/dagger/hilt/processor/internal/earlyentrypoint:processor",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     proguard_specs = ["proguard-rules.pro"],
     exports = [
         "//java/dagger/hilt/android/internal/earlyentrypoint",
@@ -150,6 +159,7 @@ android_library(
 android_library(
     name = "unstable_api",
     srcs = ["UnstableApi.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "@maven//:androidx_annotation_annotation_experimental",
     ],
@@ -158,6 +168,7 @@ android_library(
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//third_party/java/jsr305_annotations",
     ],

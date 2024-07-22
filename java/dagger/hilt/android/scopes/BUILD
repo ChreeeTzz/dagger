@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 # Description:
@@ -27,6 +29,7 @@ android_library(
         "ViewModelScoped.java",
         "ViewScoped.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":package_info",
         "//third_party/java/jsr330_inject",
@@ -36,6 +39,7 @@ android_library(
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 filegroup(

@@ -3,6 +3,7 @@
 load("@rules_java//java:defs.bzl", "java_library")
 load(
     "//:build_defs.bzl",
+    "DAGGER_RUNTIME_JVM_TARGET",
     "DOCLINT_HTML_AND_SYNTAX",
     "DOCLINT_REFERENCES",
     "POM_VERSION",
@@ -21,7 +22,7 @@ ANNOTATIONS_SRCS = [
 java_library(
     name = "annotations",
     srcs = ANNOTATIONS_SRCS,
-    javacopts = DOCLINT_HTML_AND_SYNTAX,
+    javacopts = DOCLINT_HTML_AND_SYNTAX + DAGGER_RUNTIME_JVM_TARGET,
     tags = ["maven_coordinates=com.google.dagger:dagger-grpc-server-annotations:" + POM_VERSION],
     deps = [
         "//third_party/java/jsr330_inject",
@@ -36,7 +37,7 @@ java_library(
         exclude = ANNOTATIONS_SRCS,
     ),
     exported_plugins = ["//java/dagger/grpc/server/processor:plugin"],
-    javacopts = DOCLINT_HTML_AND_SYNTAX + DOCLINT_REFERENCES,
+    javacopts = DOCLINT_HTML_AND_SYNTAX + DOCLINT_REFERENCES + DAGGER_RUNTIME_JVM_TARGET,
     tags = ["maven_coordinates=com.google.dagger:dagger-grpc-server:" + POM_VERSION],
     exports = [":annotations"],
     deps = [

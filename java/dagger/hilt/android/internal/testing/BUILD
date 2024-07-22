@@ -15,6 +15,8 @@
 # Description:
 #   Internal Hilt android testing libraries
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
@@ -23,6 +25,7 @@ java_library(
     srcs = [
         "TestInjector.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 android_library(
@@ -30,6 +33,7 @@ android_library(
     srcs = [
         "InternalTestRoot.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//java/dagger/hilt:generates_root_input",
     ],
@@ -39,12 +43,14 @@ android_library(
     name = "early_test_singleton_component_creator",
     testonly = 1,
     srcs = ["EarlySingletonComponentCreator.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 android_library(
     name = "test_application_component_manager",
     testonly = 1,
     srcs = ["TestApplicationComponentManager.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":early_test_singleton_component_creator",
         ":test_component_data",
@@ -64,6 +70,7 @@ android_library(
         "TestComponentData.java",
         "TestComponentDataSupplier.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":test_injector",
         "//java/dagger/hilt/internal:component_manager",
@@ -74,6 +81,7 @@ android_library(
     name = "test_application_component_manager_holder",
     testonly = 1,
     srcs = ["TestApplicationComponentManagerHolder.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//java/dagger/hilt/internal:component_manager",
     ],
@@ -83,6 +91,7 @@ android_library(
     name = "mark_that_rules_ran_rule",
     testonly = 1,
     srcs = ["MarkThatRulesRanRule.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":test_application_component_manager",
         ":test_application_component_manager_holder",

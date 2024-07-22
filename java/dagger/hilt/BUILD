@@ -12,7 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("//:build_defs.bzl", "POM_VERSION")
+load(
+    "//:build_defs.bzl",
+    "HILT_RUNTIME_JVM_TARGET",
+    "POM_VERSION",
+)
 load("//tools/maven:maven.bzl", "gen_maven_artifact")
 
 # Description:
@@ -26,6 +30,7 @@ java_library(
     exported_plugins = [
         "//java/dagger/hilt/processor/internal/aggregateddeps:plugin",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt/processor/internal/aggregateddeps:annotation",
     ],
@@ -46,6 +51,7 @@ java_library(
         # TODO(bcorso): Consider using a separate processor to validate @EntryPoint.
         "//java/dagger/hilt/processor/internal/aggregateddeps:plugin",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     proguard_specs = ["proguard-rules.pro"],
     deps = [
         ":generates_root_input",
@@ -66,6 +72,7 @@ java_library(
     exported_plugins = [
         "//java/dagger/hilt/processor/internal/generatesrootinput:processor",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt/internal/generatesrootinput",
     ],
@@ -82,6 +89,7 @@ java_library(
     exported_plugins = [
         "//java/dagger/hilt/processor/internal/definecomponent:processor",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt/internal/definecomponent",
     ],
@@ -95,6 +103,7 @@ java_library(
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//third_party/java/jsr305_annotations",
     ],

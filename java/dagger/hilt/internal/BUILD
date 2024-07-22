@@ -15,22 +15,27 @@
 # Description:
 #   Internal Hilt libraries
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
     name = "test_singleton_component",
     srcs = ["TestSingletonComponent.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [":generated_component"],
 )
 
 java_library(
     name = "generated_component",
     srcs = ["GeneratedComponent.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 java_library(
     name = "test_singleton_component_manager",
     srcs = ["TestSingletonComponentManager.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [":component_manager"],
 )
 
@@ -40,6 +45,7 @@ java_library(
         "GeneratedComponentManager.java",
         "GeneratedComponentManagerHolder.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         ":preconditions",
         ":unsafe_casts",
@@ -48,21 +54,20 @@ java_library(
 
 java_library(
     name = "preconditions",
-    srcs = [
-        "Preconditions.java",
-    ],
+    srcs = ["Preconditions.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 java_library(
     name = "unsafe_casts",
-    srcs = [
-        "UnsafeCasts.java",
-    ],
+    srcs = ["UnsafeCasts.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 java_library(
     name = "component_entry_point",
     srcs = ["ComponentEntryPoint.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     proguard_specs = ["proguard-rules.pro"],
     deps = ["//java/dagger/hilt:generates_root_input"],
 )
@@ -70,6 +75,7 @@ java_library(
 java_library(
     name = "generated_entry_point",
     srcs = ["GeneratedEntryPoint.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     proguard_specs = ["proguard-rules.pro"],
     deps = ["//java/dagger/hilt:generates_root_input"],
 )

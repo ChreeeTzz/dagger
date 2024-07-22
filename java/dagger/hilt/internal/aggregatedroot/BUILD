@@ -15,11 +15,14 @@
 # Description:
 #   The annotation for aggregating information about Hilt roots.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
     name = "aggregatedroot",
     srcs = ["AggregatedRoot.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 filegroup(

@@ -2,6 +2,8 @@
 
 set -eu
 
+readonly HILT_RUNTIME_LANGUAGE_LEVEL="52"   # JDK 8
+readonly HILT_PROCESSOR_LANGUAGE_LEVEL="62" # JDK 18
 readonly MVN_GOAL="$1"
 readonly VERSION_NAME="$2"
 shift 2
@@ -23,6 +25,7 @@ _deploy() {
   local srcjar=$4
   local javadoc=$5
   local module_name=$6
+  local java_language_level=$7
   bash $(dirname $0)/deploy-library.sh \
       "$shaded_rules" \
       "$library" \
@@ -30,6 +33,7 @@ _deploy() {
       "$srcjar" \
       "$javadoc" \
       "$module_name" \
+      "$java_language_level" \
       "$MVN_GOAL" \
       "$VERSION_NAME" \
       "${EXTRA_MAVEN_ARGS[@]:+${EXTRA_MAVEN_ARGS[@]}}"
@@ -41,7 +45,8 @@ _deploy \
   java/dagger/hilt/android/pom.xml \
   java/dagger/hilt/android/artifact-src.jar \
   java/dagger/hilt/android/artifact-javadoc.jar \
-  ""
+  "" \
+  $HILT_RUNTIME_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -49,7 +54,8 @@ _deploy \
   java/dagger/hilt/android/testing/pom.xml \
   java/dagger/hilt/android/testing/artifact-src.jar \
   java/dagger/hilt/android/testing/artifact-javadoc.jar \
-  ""
+  "" \
+  $HILT_RUNTIME_LANGUAGE_LEVEL
 
 _deploy \
   "com.google.auto.common,dagger.spi.internal.shaded.auto.common;androidx.room.compiler,dagger.spi.internal.shaded.androidx.room.compiler;kotlinx.metadata,dagger.spi.internal.shaded.kotlinx.metadata;androidx.room,dagger.spi.internal.shaded.androidx.room" \
@@ -57,7 +63,8 @@ _deploy \
   java/dagger/hilt/processor/pom.xml \
   java/dagger/hilt/processor/artifact-src.jar \
   java/dagger/hilt/processor/artifact-javadoc.jar \
-  ""
+  "" \
+  $HILT_PROCESSOR_LANGUAGE_LEVEL
 
 _deploy \
   "com.google.auto.common,dagger.spi.internal.shaded.auto.common;androidx.room.compiler,dagger.spi.internal.shaded.androidx.room.compiler;kotlinx.metadata,dagger.spi.internal.shaded.kotlinx.metadata;androidx.room,dagger.spi.internal.shaded.androidx.room" \
@@ -65,7 +72,8 @@ _deploy \
   java/dagger/hilt/android/processor/pom.xml \
   java/dagger/hilt/android/processor/artifact-src.jar \
   java/dagger/hilt/android/processor/artifact-javadoc.jar \
-  ""
+  "" \
+  $HILT_PROCESSOR_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -73,4 +81,5 @@ _deploy \
   java/dagger/hilt/pom.xml \
   java/dagger/hilt/artifact-core-src.jar \
   java/dagger/hilt/artifact-core-javadoc.jar \
-  ""
+  "" \
+  $HILT_RUNTIME_LANGUAGE_LEVEL

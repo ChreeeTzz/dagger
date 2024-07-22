@@ -17,6 +17,8 @@
 #   meant to be temporary and so defaults may change with releases and then these flags
 #   may eventually be removed, just like compiler options with similar purposes.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 android_library(
@@ -24,6 +26,7 @@ android_library(
     srcs = [
         "FragmentGetContextFix.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//:dagger_with_compiler",
         "//java/dagger/hilt:entry_point",

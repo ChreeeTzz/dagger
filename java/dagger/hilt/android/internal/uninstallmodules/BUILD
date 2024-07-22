@@ -15,10 +15,13 @@
 # Description:
 #   A processor that aggregates metadata about Hilt @UninstallModules annotations
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
     name = "uninstallmodules",
     testonly = 1,
     srcs = ["AggregatedUninstallModules.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )

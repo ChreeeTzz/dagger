@@ -15,6 +15,7 @@
 # Description:
 #   Hilt ViewModel integration.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
 load("//tools:bazel_compat.bzl", "compat_kt_android_library")
 
 package(default_visibility = ["//:src"])
@@ -22,6 +23,7 @@ package(default_visibility = ["//:src"])
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//third_party/java/jsr305_annotations",
     ],
@@ -33,6 +35,7 @@ android_library(
     exported_plugins = [
         "//java/dagger/hilt/android/processor/internal/viewmodel:processor",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//:dagger_with_compiler",
         "//java/dagger/hilt:install_in",
@@ -49,6 +52,7 @@ android_library(
 android_library(
     name = "retained_lifecycle",
     srcs = ["RetainedLifecycle.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":package_info",
         "@maven//:androidx_annotation_annotation",
@@ -58,6 +62,7 @@ android_library(
 android_library(
     name = "activity_retained_saved_state",
     srcs = ["ActivityRetainedSavedState.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//java/dagger/hilt/android:unstable_api",
         "//third_party/java/jsr330_inject",

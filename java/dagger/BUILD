@@ -18,8 +18,8 @@
 load("@rules_java//java:defs.bzl", "java_library")
 load(
     "//:build_defs.bzl",
+    "DAGGER_RUNTIME_JVM_TARGET",
     "DOCLINT_HTML_AND_SYNTAX",
-    "JAVA_RELEASE_MIN",
     "POM_VERSION",
 )
 load("//tools/maven:maven.bzl", "gen_maven_artifact")
@@ -29,7 +29,7 @@ package(default_visibility = ["//:src"])
 java_library(
     name = "core",
     srcs = glob(["**/*.java"]),
-    javacopts = JAVA_RELEASE_MIN + DOCLINT_HTML_AND_SYNTAX,
+    javacopts = DAGGER_RUNTIME_JVM_TARGET + DOCLINT_HTML_AND_SYNTAX,
     tags = ["maven_coordinates=com.google.dagger:dagger:" + POM_VERSION],
     exports = ["//third_party/java/jsr330_inject"],
     deps = [

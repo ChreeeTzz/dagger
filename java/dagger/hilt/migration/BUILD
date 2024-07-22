@@ -14,6 +14,8 @@
 # Description:
 #   Libraries for migration.
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
@@ -22,6 +24,7 @@ java_library(
     exported_plugins = [
         "//java/dagger/hilt/processor/internal/aliasof:processor",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt/internal/aliasof",
     ],
@@ -37,6 +40,7 @@ java_library(
     exported_plugins = [
         "//java/dagger/hilt/processor/internal/disableinstallincheck:processor",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
     ],
     deps = [
@@ -47,6 +51,7 @@ java_library(
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 filegroup(

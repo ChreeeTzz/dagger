@@ -15,12 +15,15 @@
 # Description:
 #   A processor that aggregates metadata about Hilt @InstallIn annotations
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 # TODO(bcorso): Remove all AggregatedDeps usage from the processor class path.
 java_library(
     name = "annotation",
     srcs = ["AggregatedDeps.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     exports = [
         "//java/dagger/hilt/codegen:originating_element",
     ],

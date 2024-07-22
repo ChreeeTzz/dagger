@@ -15,6 +15,8 @@
 # Description:
 #   Hilt components
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 java_library(
@@ -22,6 +24,7 @@ java_library(
     srcs = [
         "SingletonComponent.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":package_info",
         "//java/dagger/hilt:define_component",
@@ -32,6 +35,7 @@ java_library(
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 filegroup(

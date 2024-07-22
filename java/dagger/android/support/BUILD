@@ -17,6 +17,8 @@
 
 load(
     "//:build_defs.bzl",
+    "DAGGER_RUNTIME_JVM_TARGET",
+    "DOCLINT_HTML_AND_SYNTAX",
     "POM_VERSION",
 )
 load("//tools:dejetify.bzl", "dejetified_library")
@@ -36,6 +38,7 @@ filegroup(
 android_library(
     name = "support",
     srcs = glob(["*.java"]),
+    javacopts = DAGGER_RUNTIME_JVM_TARGET + DOCLINT_HTML_AND_SYNTAX,
     tags = ["maven_coordinates=com.google.dagger:dagger-android-support:" + POM_VERSION],
     deps = [
         "//:dagger_with_compiler",

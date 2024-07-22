@@ -1,13 +1,14 @@
 # Description:
 #   ErrorProne refactorings and static analysis for Dagger
 
-load("@rules_java//java:defs.bzl", "java_library")
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
 
 package(default_visibility = ["//:src"])
 
 java_library(
     name = "errorprone",
     srcs = glob(["*.java"]),
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         "//java/dagger:core",
         "//third_party/java/error_prone:check_api",

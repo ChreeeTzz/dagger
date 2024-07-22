@@ -15,6 +15,8 @@
 # Description:
 #   Hilt Android qualifiers
 
+load("//:build_defs.bzl", "HILT_RUNTIME_JVM_TARGET")
+
 package(default_visibility = ["//:src"])
 
 android_library(
@@ -23,6 +25,7 @@ android_library(
         "ActivityContext.java",
         "ApplicationContext.java",
     ],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
     deps = [
         ":package_info",
         "//third_party/java/jsr330_inject",
@@ -32,6 +35,7 @@ android_library(
 java_library(
     name = "package_info",
     srcs = ["package-info.java"],
+    javacopts = HILT_RUNTIME_JVM_TARGET,
 )
 
 filegroup(

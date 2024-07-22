@@ -2,6 +2,8 @@
 
 set -eu
 
+readonly DAGGER_RUNTIME_LANGUAGE_LEVEL="51"   # JDK 7
+readonly DAGGER_PROCESSOR_LANGUAGE_LEVEL="62" # JDK 18
 readonly MVN_GOAL="$1"
 readonly VERSION_NAME="$2"
 shift 2
@@ -23,6 +25,7 @@ _deploy() {
   local srcjar=$4
   local javadoc=$5
   local module_name=$6
+  local java_language_level=$7
   bash $(dirname $0)/deploy-library.sh \
       "$shaded_rules" \
       "$library" \
@@ -30,6 +33,7 @@ _deploy() {
       "$srcjar" \
       "$javadoc" \
       "$module_name" \
+      "$java_language_level" \
       "$MVN_GOAL" \
       "$VERSION_NAME" \
       "${EXTRA_MAVEN_ARGS[@]:+${EXTRA_MAVEN_ARGS[@]}}"
@@ -41,7 +45,8 @@ _deploy \
   java/dagger/pom.xml \
   java/dagger/artifact-src.jar \
   java/dagger/artifact-javadoc.jar \
-  "dagger"
+  "dagger" \
+  $DAGGER_RUNTIME_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -49,7 +54,8 @@ _deploy \
   gwt/pom.xml \
   gwt/libgwt.jar \
   gwt/libgwt.jar \
-  ""
+  "" \
+  $DAGGER_PROCESSOR_LANGUAGE_LEVEL
 
 _deploy \
   "com.google.auto.common,dagger.spi.internal.shaded.auto.common;androidx.room.compiler,dagger.spi.internal.shaded.androidx.room.compiler;kotlinx.metadata,dagger.spi.internal.shaded.kotlinx.metadata;androidx.room,dagger.spi.internal.shaded.androidx.room" \
@@ -57,7 +63,8 @@ _deploy \
   java/dagger/internal/codegen/pom.xml \
   java/dagger/internal/codegen/artifact-src.jar \
   java/dagger/internal/codegen/artifact-javadoc.jar \
-  ""
+  "" \
+  $DAGGER_PROCESSOR_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -65,7 +72,8 @@ _deploy \
   java/dagger/producers/pom.xml \
   java/dagger/producers/artifact-src.jar \
   java/dagger/producers/artifact-javadoc.jar \
-  ""
+  "" \
+  $DAGGER_RUNTIME_LANGUAGE_LEVEL
 
 _deploy \
   "com.google.auto.common,dagger.spi.internal.shaded.auto.common;androidx.room.compiler,dagger.spi.internal.shaded.androidx.room.compiler;kotlinx.metadata,dagger.spi.internal.shaded.kotlinx.metadata;androidx.room,dagger.spi.internal.shaded.androidx.room" \
@@ -73,7 +81,8 @@ _deploy \
   java/dagger/spi/pom.xml \
   java/dagger/spi/artifact-src.jar \
   java/dagger/spi/artifact-javadoc.jar \
-  ""
+  "" \
+  $DAGGER_PROCESSOR_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -81,7 +90,8 @@ _deploy \
   java/dagger/android/pom.xml \
   java/dagger/android/artifact-src.jar \
   java/dagger/android/artifact-javadoc.jar \
-  ""
+  "" \
+  $DAGGER_RUNTIME_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -89,7 +99,8 @@ _deploy \
   java/dagger/android/legacy-pom.xml \
   "" \
   "" \
-  ""
+  "" \
+  $DAGGER_RUNTIME_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -97,7 +108,8 @@ _deploy \
   java/dagger/android/support/pom.xml \
   java/dagger/android/support/artifact-src.jar \
   java/dagger/android/support/artifact-javadoc.jar \
-  ""
+  "" \
+  $DAGGER_RUNTIME_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -105,7 +117,8 @@ _deploy \
   java/dagger/android/support/legacy-pom.xml \
   "" \
   "" \
-  ""
+  "" \
+  $DAGGER_RUNTIME_LANGUAGE_LEVEL
 
 _deploy \
   "com.google.auto.common,dagger.spi.internal.shaded.auto.common;androidx.room.compiler,dagger.spi.internal.shaded.androidx.room.compiler;kotlinx.metadata,dagger.spi.internal.shaded.kotlinx.metadata;androidx.room,dagger.spi.internal.shaded.androidx.room" \
@@ -113,7 +126,8 @@ _deploy \
   java/dagger/android/processor/pom.xml \
   java/dagger/android/processor/artifact-src.jar \
   java/dagger/android/processor/artifact-javadoc.jar \
-  ""
+  "" \
+  $DAGGER_PROCESSOR_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -121,7 +135,8 @@ _deploy \
   java/dagger/grpc/server/server-pom.xml \
   java/dagger/grpc/server/libserver-src.jar \
   java/dagger/grpc/server/javadoc.jar \
-  ""
+  "" \
+  $DAGGER_RUNTIME_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -129,7 +144,8 @@ _deploy \
   java/dagger/grpc/server/annotations-pom.xml \
   java/dagger/grpc/server/libannotations-src.jar \
   java/dagger/grpc/server/javadoc.jar \
-  ""
+  "" \
+  $DAGGER_RUNTIME_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -137,7 +153,8 @@ _deploy \
   java/dagger/grpc/server/processor/pom.xml \
   java/dagger/grpc/server/processor/libprocessor-src.jar \
   java/dagger/grpc/server/processor/javadoc.jar \
-  ""
+  "" \
+  $DAGGER_PROCESSOR_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -145,7 +162,8 @@ _deploy \
   java/dagger/lint/lint-pom.xml \
   java/dagger/lint/lint-artifact-src.jar \
   java/dagger/lint/lint-artifact-javadoc.jar \
-  ""
+  "" \
+  $DAGGER_PROCESSOR_LANGUAGE_LEVEL
 
 _deploy \
   "" \
@@ -153,4 +171,5 @@ _deploy \
   java/dagger/lint/lint-android-pom.xml \
   "" \
   "" \
-  ""
+  "" \
+  $DAGGER_PROCESSOR_LANGUAGE_LEVEL
