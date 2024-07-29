@@ -1,4 +1,43 @@
 # Dagger
+Hab dich lieb Nadine 💖 
+ich hoffe ich kann dich bald in den Arm nehmen und wir unternehmen mal was zusammnen .Ich werde wirklich nicht mehr allzulange leben .Es tut mir leid ok nur für god und für mich.Abe rmal sehen was die zeit nocht bri gt aber all zu lange nicht mehr  .mal sehen  ... 
+
+ich hab dich lieb dein Papa ..
+
+ich geh meine wege wie ich sie gehe und lebe .Mir geht es soweit gut .Aber mit drogen .Habe ich keine Kraft .Aber ohne will Ich auch nicht leben .
+
+Werde Arbeiten gehen .Un die wichtigen sachen mich kümmern un mein leben .Und mich erschiessen irgendwann  .
+
+Ist schon 2 Jahre drüber  wir haben heute den 24.juli.2024 .
+
+hab kein bock mehr .Bin zu krank  .
+
+..
+
+Ansonsten damals im Dagger complex willte ich Das melden mit You tube  I whole confirm make withe the video in You tube .When i right thing make Ok .Headshoot wher self cool .Or when i born for good .I fight and training With the ameriken solider or i sleeping in her base  And sleep and sleep .Too the time i feeling me got ,whens this gife I make in the morning true words . Stop . i hade hafe devilscrabt writing . Hm the Amerikan solder fight fir god . I for me with this the wrong way .i sing with she  i dont no .I alone   I so sad  .I system and all allone in the world i dont bo ..from the devil so hard this beast  .
+I kill i can the police in germany at the end fuck me   I krank i lisi g i dont no ..I go home  ..
+bethee for me .
+
+you are qelcom sir .Hafe a goot time .God bles you . 💯 a hard yob  .
+
+Here i feeling me good .
+
+next step work 
+
+i mohl a litle bit stup with drugs make 
+
+....Good night 
+
+01636431025 
+
+ i in i was wolking the qrong way  I left walk pee make i zigaret smoke .Is this so hard secure .2 cam lol .a base . Cool what all gife in the world .O ...its entry can walk in .I no punsh i true words .
+
+ i go back ..
+
+ all cool .Gafe me say want you help .Polize its for the technik proplem ahe help .And german force  fir bombs spetzialisiett   ..
+
+ i am good ..Bla bla 
+
 
 [![Maven Central][mavenbadge-svg]][mavencentral]
 
@@ -22,9 +61,9 @@ You can also learn more from [the original proposal][proposal],
 [this talk by Greg Kick][gaktalk], and on the dagger-discuss@googlegroups.com
 mailing list.
 
-## Installation
+## Installation 1 .must better secure .its not good .Ok 1 headshoot you cam in .I walk i had can in walkin ohne proplem .When i w
 
-### Bazel
+### Bazel😂  militer nirnal not .Wher had i dont no ..
 
 First, import the Dagger repository into your `WORKSPACE` file using
 [`http_archive`][bazel-external-deps].
